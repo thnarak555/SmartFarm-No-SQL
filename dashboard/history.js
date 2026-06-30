@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://tc.sbtc-mng.com/api.php'; 
+const API_BASE_URL = '/api'; 
 
 const sensorHistoryBody = document.getElementById('sensor-history-body');
 const deviceHistoryBody = document.getElementById('device-history-body');

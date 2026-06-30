@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "http://tc.sbtc-mng.com/api.php"
+    }
+  ]
+}

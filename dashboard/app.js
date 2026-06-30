@@ -1,5 +1,5 @@
 // API Base URL
-const API_BASE_URL = 'http://tc.sbtc-mng.com/api.php'; 
+const API_BASE_URL = '/api'; 
 
 // DOM Elements
 const sensorContainer = document.getElementById('sensor-container');

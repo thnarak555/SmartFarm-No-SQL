@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Farm Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="dashboard/style.css">
+</head>
+
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1><i class="fa-solid fa-leaf"></i> Smart Farm Dashboard</h1>
+                <p>Real-time Monitoring & Control System</p>
+            </div>
+            <nav class="nav-bar">
+                <a href="index.html" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                <a href="dashboard/history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i>
+                    History</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="dashboard-grid">
+                <!-- Sensors Section -->
+                <div class="glass-panel sensors-panel">
+                    <h2><i class="fa-solid fa-temperature-half"></i> Environment Sensors</h2>
+                    <div class="sensor-cards" id="sensor-container">
+                        <!-- Sensor Cards will be injected here by JS -->
+                        <div class="loading">Loading sensors...</div>
+                    </div>
+                </div>
+
+                <!-- Devices Section -->
+                <div class="glass-panel devices-panel">
+                    <h2><i class="fa-solid fa-lightbulb"></i> Device Control</h2>
+                    <div class="device-cards" id="device-container">
+                        <!-- Device Cards will be injected here by JS -->
+                        <div class="loading">Loading devices...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-left">
+                <span id="connection-status" class="status-indicator online">System Online</span>
+            </div>
+            <div class="footer-right">
+                <p>Last update: <span id="last-update-time">--:--</span> | Auto-refreshing (5s)</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="dashboard/app.js"></script>
+</body>
+
+</html>

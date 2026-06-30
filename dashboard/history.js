@@ -5,6 +5,7 @@ const deviceHistoryBody = document.getElementById('device-history-body');
 const connectionStatus = document.getElementById('connection-status');
 const lastUpdateTime = document.getElementById('last-update-time');
 let sensorChart = null;
+let deviceChart = null;
 
 function formatDateTime(datetimeStr) {
     const timeObj = new Date(datetimeStr);
@@ -183,6 +184,7 @@ async function fetchDeviceHistory() {
                 datetime: l.created_at
             }));
             renderDeviceHistory(leds);
+            renderDeviceChart(leds);
         }
     } catch (error) {
         console.error('Error fetching device history:', error);
@@ -211,6 +213,118 @@ function renderDeviceHistory(records) {
     });
     
     deviceHistoryBody.innerHTML = html;
+}
+
+function renderDeviceChart(records) {
+    if (!records || records.length === 0) return;
+
+    const reversedRecords = [...records].reverse();
+    const timeSet = new Set();
+    reversedRecords.forEach(r => timeSet.add(r.datetime));
+    const timeArray = Array.from(timeSet).sort();
+    
+    const deviceGroups = {};
+    reversedRecords.forEach(r => {
+        if (!deviceGroups[r.device_name]) {
+            deviceGroups[r.device_name] = {};
+        }
+        deviceGroups[r.device_name][r.datetime] = r.status === 'ON' ? 1 : 0;
+    });
+
+    const labels = timeArray.map(t => {
+        const d = new Date(t);
+        return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    });
+
+    const colors = {
+        'Water Pump': '#3b82f6',
+        'LED': '#fbbf24',
+        'Fan': '#a855f7',
+        'default': '#f43f5e'
+    };
+
+    const datasets = Object.keys(deviceGroups).map(deviceName => {
+        const data = timeArray.map(t => {
+            const val = deviceGroups[deviceName][t];
+            return val !== undefined ? val : null;
+        }); 
+        
+        const color = colors[deviceName] || colors['default'];
+        
+        return {
+            label: deviceName,
+            data: data,
+            borderColor: color,
+            backgroundColor: color,
+            stepped: true,
+            borderWidth: 2,
+            pointRadius: 2,
+            pointBackgroundColor: '#111827',
+            spanGaps: true
+        };
+    });
+
+    const ctx = document.getElementById('deviceChart').getContext('2d');
+    
+    if (deviceChart) {
+        deviceChart.data.labels = labels;
+        deviceChart.data.datasets = datasets;
+        deviceChart.update();
+    } else {
+        deviceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { boxWidth: 12, usePointStyle: true }
+                    },
+                    tooltip: { 
+                        mode: 'index', 
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y === 1 ? 'ON' : 'OFF';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        beginAtZero: true,
+                        max: 1.2,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                if (value === 0) return 'OFF';
+                                if (value === 1) return 'ON';
+                                return '';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    }
 }
 
 function init() {
